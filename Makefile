@@ -4,4 +4,5 @@ test:
 	go test -v -race -count=1 ./...
 
 publish:
-	GOPROXY=https://proxy.golang.org go list -m github.com/fuskovic/env@latest
+	@latest=$$(git describe --tags --abbrev=0) && \
+	GOPROXY=https://proxy.golang.org go list -m github.com/fuskovic/env@$$latest
