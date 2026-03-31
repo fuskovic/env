@@ -1,5 +1,9 @@
 # env
 
+[![CI](https://github.com/fuskovic/env/actions/workflows/ci.yml/badge.svg)](https://github.com/fuskovic/env/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fuskovic/env)](https://goreportcard.com/report/github.com/fuskovic/env)
+![coverage](https://img.shields.io/badge/Go%20Coverage--grey?filename=coverage_badge.png)
+
 Unmarshal `.env` files directly into Go structs. Zero external dependencies.
 
 ## Why?
