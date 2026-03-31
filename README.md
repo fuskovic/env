@@ -65,7 +65,7 @@ type Config struct {
 
 func main() {
 	var cfg Config
-	if err := env.Unmarshal("dev.env", &cfg); err != nil {
+	if err := env.UnmarshalFromFile("dev.env", &cfg); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("%+v\n", cfg)
@@ -78,7 +78,7 @@ func main() {
 ```go
 func main() {
 	var cfg Config
-	if err := env.UnmarshalFromEnv(&cfg); err != nil {
+	if err := env.Unmarshal(&cfg); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("%+v\n", cfg)
