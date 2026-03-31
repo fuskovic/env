@@ -1,0 +1,7 @@
+.PHONY: test publish
+
+test:
+	go test -v -race -count=1 ./...
+
+publish:
+	GOPROXY=https://proxy.golang.org go list -m github.com/fuskovic/env@latest
