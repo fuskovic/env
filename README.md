@@ -11,14 +11,6 @@ Unmarshal `.env` files directly into Go structs. Zero external dependencies.
 | [viper](https://github.com/spf13/viper) | Yes | Yes | No (17+ deps) |
 | **env** | **Yes** | **Yes** | **Yes** |
 
-**godotenv** loads `.env` files into `os.Environ` but gives you a `map[string]string` — you still have to manually pluck values out and convert types yourself.
-
-**envconfig** maps environment variables to struct fields with type conversion, but it reads from `os.Environ` only — it can't read `.env` files. The common workaround is chaining `godotenv.Load()` then `envconfig.Process()`, which pollutes the process environment and requires two packages for one job.
-
-**viper** can do both, but it's a 17+ dependency kitchen-sink config framework. If all you need is `.env` -> struct, that's a lot of weight.
-
-**env** does one thing: read a `.env` file and unmarshal it into a struct. One function call, one dependency, no environment pollution.
-
 ## Install
 
 ```
