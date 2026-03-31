@@ -23,7 +23,9 @@ go get github.com/fuskovic/env
 
 ## Usage
 
-Given a `.env` file:
+Unmarshal env file into struct:
+
+`dev.env`
 
 ```
 # Database
@@ -65,7 +67,7 @@ type Config struct {
 
 func main() {
 	var cfg Config
-	if err := env.Unmarshal(".env", &cfg); err != nil {
+	if err := env.Unmarshal("dev.env", &cfg); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("%+v\n", cfg)
@@ -73,9 +75,7 @@ func main() {
 }
 ```
 
-### From the process environment
-
-`UnmarshalFromEnv` reads from `os.Environ` instead of a file — a drop-in replacement for envconfig:
+### Unmarshal from environment
 
 ```go
 func main() {
