@@ -37,6 +37,19 @@ func Unmarshal(path string, dst any) error {
 	return decode(vals, dst)
 }
 
+// UnmarshalFromEnv populates dst from the current process environment.
+// This provides the same functionality as envconfig — reading from os.Environ
+// instead of a file.
+func UnmarshalFromEnv(dst any) error {
+	vals := make(map[string]string)
+	for _, entry := range os.Environ() {
+		if k, v, ok := strings.Cut(entry, "="); ok {
+			vals[k] = v
+		}
+	}
+	return decode(vals, dst)
+}
+
 // parse reads a .env file and returns a map of key-value pairs.
 func parse(path string) (map[string]string, error) {
 	f, err := os.Open(path)
