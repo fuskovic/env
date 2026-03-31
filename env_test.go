@@ -256,3 +256,54 @@ func TestUnsignedInt(t *testing.T) {
 		t.Errorf("Count = %d, want 255", cfg.Count)
 	}
 }
+
+func TestUnmarshalFromEnv(t *testing.T) {
+	t.Setenv("TEST_ENV_HOST", "127.0.0.1")
+	t.Setenv("TEST_ENV_PORT", "9090")
+	t.Setenv("TEST_ENV_DEBUG", "true")
+
+	var cfg struct {
+		Host  string `env:"TEST_ENV_HOST"`
+		Port  int    `env:"TEST_ENV_PORT"`
+		Debug bool   `env:"TEST_ENV_DEBUG"`
+	}
+
+	if err := UnmarshalFromEnv(&cfg); err != nil {
+		t.Fatal(err)
+	}
+
+	if cfg.Host != "127.0.0.1" {
+		t.Errorf("Host = %q, want %q", cfg.Host, "127.0.0.1")
+	}
+	if cfg.Port != 9090 {
+		t.Errorf("Port = %d, want %d", cfg.Port, 9090)
+	}
+	if !cfg.Debug {
+		t.Error("Debug = false, want true")
+	}
+}
+
+func TestUnmarshalFromEnvRequired(t *testing.T) {
+	var cfg struct {
+		Missing string `env:"TEST_ENV_DEFINITELY_NOT_SET,required"`
+	}
+
+	err := UnmarshalFromEnv(&cfg)
+	if err == nil {
+		t.Fatal("expected error for missing required env var")
+	}
+}
+
+func TestUnmarshalFromEnvDefault(t *testing.T) {
+	var cfg struct {
+		Port int `env:"TEST_ENV_UNSET_PORT,default=3000"`
+	}
+
+	if err := UnmarshalFromEnv(&cfg); err != nil {
+		t.Fatal(err)
+	}
+
+	if cfg.Port != 3000 {
+		t.Errorf("Port = %d, want %d", cfg.Port, 3000)
+	}
+}
