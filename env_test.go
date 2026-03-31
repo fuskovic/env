@@ -33,7 +33,7 @@ TIMEOUT=5s
 		Timeout time.Duration `env:"TIMEOUT"`
 	}
 
-	if err := Unmarshal(path, &cfg); err != nil {
+	if err := UnmarshalFromFile(path, &cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -61,7 +61,7 @@ func TestSlice(t *testing.T) {
 		Hosts []string `env:"HOSTS"`
 	}
 
-	if err := Unmarshal(path, &cfg); err != nil {
+	if err := UnmarshalFromFile(path, &cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -77,7 +77,7 @@ func TestIntSlice(t *testing.T) {
 		Ports []int `env:"PORTS"`
 	}
 
-	if err := Unmarshal(path, &cfg); err != nil {
+	if err := UnmarshalFromFile(path, &cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -93,7 +93,7 @@ func TestRequired(t *testing.T) {
 		Missing string `env:"MISSING,required"`
 	}
 
-	err := Unmarshal(path, &cfg)
+	err := UnmarshalFromFile(path, &cfg)
 	if err == nil {
 		t.Fatal("expected error for missing required key")
 	}
@@ -106,7 +106,7 @@ func TestDefault(t *testing.T) {
 		Port int `env:"PORT,default=3000"`
 	}
 
-	if err := Unmarshal(path, &cfg); err != nil {
+	if err := UnmarshalFromFile(path, &cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -126,7 +126,7 @@ SINGLE='foo bar'
 		Single string `env:"SINGLE"`
 	}
 
-	if err := Unmarshal(path, &cfg); err != nil {
+	if err := UnmarshalFromFile(path, &cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -148,7 +148,7 @@ export KEY=value
 		Key string `env:"KEY"`
 	}
 
-	if err := Unmarshal(path, &cfg); err != nil {
+	if err := UnmarshalFromFile(path, &cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -174,7 +174,7 @@ APP_NAME=myapp
 		AppName string `env:"APP_NAME"`
 	}
 
-	if err := Unmarshal(path, &cfg); err != nil {
+	if err := UnmarshalFromFile(path, &cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -196,7 +196,7 @@ func TestPointer(t *testing.T) {
 		Val *int `env:"VAL"`
 	}
 
-	if err := Unmarshal(path, &cfg); err != nil {
+	if err := UnmarshalFromFile(path, &cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -213,7 +213,7 @@ func TestUntaggedFieldsIgnored(t *testing.T) {
 		Ignored string
 	}
 
-	if err := Unmarshal(path, &cfg); err != nil {
+	if err := UnmarshalFromFile(path, &cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -227,7 +227,7 @@ func TestUntaggedFieldsIgnored(t *testing.T) {
 
 func TestNonPointerError(t *testing.T) {
 	var cfg struct{}
-	err := Unmarshal("unused", cfg)
+	err := Unmarshal(cfg)
 	if err == nil {
 		t.Fatal("expected error for non-pointer dst")
 	}
@@ -235,7 +235,7 @@ func TestNonPointerError(t *testing.T) {
 
 func TestFileNotFound(t *testing.T) {
 	var cfg struct{}
-	err := Unmarshal("/nonexistent/.env", &cfg)
+	err := UnmarshalFromFile("/nonexistent/.env", &cfg)
 	if err == nil {
 		t.Fatal("expected error for missing file")
 	}
@@ -248,7 +248,7 @@ func TestUnsignedInt(t *testing.T) {
 		Count uint8 `env:"COUNT"`
 	}
 
-	if err := Unmarshal(path, &cfg); err != nil {
+	if err := UnmarshalFromFile(path, &cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -257,7 +257,7 @@ func TestUnsignedInt(t *testing.T) {
 	}
 }
 
-func TestUnmarshalFromEnv(t *testing.T) {
+func TestUnmarshal(t *testing.T) {
 	t.Setenv("TEST_ENV_HOST", "127.0.0.1")
 	t.Setenv("TEST_ENV_PORT", "9090")
 	t.Setenv("TEST_ENV_DEBUG", "true")
@@ -268,7 +268,7 @@ func TestUnmarshalFromEnv(t *testing.T) {
 		Debug bool   `env:"TEST_ENV_DEBUG"`
 	}
 
-	if err := UnmarshalFromEnv(&cfg); err != nil {
+	if err := Unmarshal(&cfg); err != nil {
 		t.Fatal(err)
 	}
 
@@ -283,23 +283,23 @@ func TestUnmarshalFromEnv(t *testing.T) {
 	}
 }
 
-func TestUnmarshalFromEnvRequired(t *testing.T) {
+func TestUnmarshalRequired(t *testing.T) {
 	var cfg struct {
 		Missing string `env:"TEST_ENV_DEFINITELY_NOT_SET,required"`
 	}
 
-	err := UnmarshalFromEnv(&cfg)
+	err := Unmarshal(&cfg)
 	if err == nil {
 		t.Fatal("expected error for missing required env var")
 	}
 }
 
-func TestUnmarshalFromEnvDefault(t *testing.T) {
+func TestUnmarshalDefault(t *testing.T) {
 	var cfg struct {
 		Port int `env:"TEST_ENV_UNSET_PORT,default=3000"`
 	}
 
-	if err := UnmarshalFromEnv(&cfg); err != nil {
+	if err := Unmarshal(&cfg); err != nil {
 		t.Fatal(err)
 	}
 
