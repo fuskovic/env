@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-// Unmarshal reads the file at path and populates dst with the values found.
+// Unmarshal populates dst from the current process environment.
 // dst must be a non-nil pointer to a struct. Struct fields are matched to
 // environment variable names using the "env" struct tag. Supported tag options:
 //
@@ -29,23 +29,22 @@ import (
 // A "default" option provides a fallback value:
 //
 //	Port int `env:"PORT,default=8080"`
-func Unmarshal(path string, dst any) error {
-	vals, err := parse(path)
-	if err != nil {
-		return fmt.Errorf("env: parsing %s: %w", path, err)
-	}
-	return decode(vals, dst)
-}
-
-// UnmarshalFromEnv populates dst from the current process environment.
-// This provides the same functionality as envconfig — reading from os.Environ
-// instead of a file.
-func UnmarshalFromEnv(dst any) error {
+func Unmarshal(dst any) error {
 	vals := make(map[string]string)
 	for _, entry := range os.Environ() {
 		if k, v, ok := strings.Cut(entry, "="); ok {
 			vals[k] = v
 		}
+	}
+	return decode(vals, dst)
+}
+
+// UnmarshalFromFile reads the file at path and populates dst with the values found.
+// It follows the same struct tag conventions as [Unmarshal].
+func UnmarshalFromFile(path string, dst any) error {
+	vals, err := parse(path)
+	if err != nil {
+		return fmt.Errorf("env: parsing %s: %w", path, err)
 	}
 	return decode(vals, dst)
 }
