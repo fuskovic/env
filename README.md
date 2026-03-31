@@ -23,7 +23,7 @@ go get github.com/fuskovic/env
 
 ## Usage
 
-Unmarshal env file into struct:
+### Unmarshal from file
 
 `dev.env`
 
@@ -38,8 +38,6 @@ DEBUG=true
 TIMEOUT=30s
 ALLOWED_ORIGINS=https://example.com, https://api.example.com
 ```
-
-Unmarshal it into a struct:
 
 ```go
 package main
