@@ -73,9 +73,23 @@ func main() {
 }
 ```
 
+### From the process environment
+
+`UnmarshalFromEnv` reads from `os.Environ` instead of a file — a drop-in replacement for envconfig:
+
+```go
+func main() {
+	var cfg Config
+	if err := env.UnmarshalFromEnv(&cfg); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%+v\n", cfg)
+}
+```
+
 ## Struct tags
 
-The `env` struct tag maps a field to a key in the `.env` file.
+The `env` struct tag maps a field to a key in the `.env` file or environment variable.
 
 ```go
 type Config struct {
